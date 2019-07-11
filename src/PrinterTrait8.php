@@ -72,6 +72,11 @@ trait PrinterTrait8
     private $defaultMarkers = [];
 
     /**
+     * @var bool
+     */
+    private $formatClassName = true;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(
@@ -268,6 +273,7 @@ trait PrinterTrait8
         $this->hideNamespace = $this->getConfigOption('cd-printer-hide-namespace');
         $this->anyBarEnabled = $this->getConfigOption('cd-printer-anybar');
         $this->anyBarPort    = $this->getConfigOption('cd-printer-anybar-port');
+        $this->formatClassName = $this->getConfigOption('cd-printer-format-classname');
 
         $this->markers = [
             'pass'         => $this->getConfigMarker('cd-pass'),
@@ -366,6 +372,10 @@ trait PrinterTrait8
         $suffix   = '   ';
         if ($this->hideNamespace && strrpos($className, '\\')) {
             $className = substr($className, strrpos($className, '\\') + 1);
+        }
+        
+        if (!$this->formatClassName) {
+            return $prefix . $className . $suffix;
         }
         $formattedClassName = $prefix . $className . $suffix;
 
