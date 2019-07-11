@@ -2,8 +2,8 @@
 
 namespace Codedungeon\PHPUnitPrettyResultPrinter;
 
-use Noodlehaus\Config;
 use Codedungeon\PHPCliColors\Color;
+use Noodlehaus\Config;
 use Noodlehaus\Exception\EmptyDirectoryException;
 
 /**
@@ -70,6 +70,11 @@ trait PrinterTrait
      * @var array
      */
     private $defaultMarkers = [];
+
+    /**
+     * @var bool
+     */
+    private $formatClassName = true;
 
     /**
      * {@inheritdoc}
@@ -263,11 +268,12 @@ trait PrinterTrait
         $this->printerOptions = array_merge($this->defaultConfigOptions, $this->printerOptions);
 
         $this->hideClassName = $this->getConfigOption('cd-printer-hide-class');
-        $this->simpleOutput  = $this->getConfigOption('cd-printer-simple-output');
-        $this->showConfig    = $this->getConfigOption('cd-printer-show-config');
+        $this->simpleOutput = $this->getConfigOption('cd-printer-simple-output');
+        $this->showConfig = $this->getConfigOption('cd-printer-show-config');
         $this->hideNamespace = $this->getConfigOption('cd-printer-hide-namespace');
         $this->anyBarEnabled = $this->getConfigOption('cd-printer-anybar');
-        $this->anyBarPort    = $this->getConfigOption('cd-printer-anybar-port');
+        $this->anyBarPort = $this->getConfigOption('cd-printer-anybar-port');
+        $this->formatClassName = $this->getConfigOption('cd-printer-format-classname');
 
         $this->markers = [
             'pass'         => $this->getConfigMarker('cd-pass'),
@@ -366,6 +372,10 @@ trait PrinterTrait
         $suffix   = '   ';
         if ($this->hideNamespace && strrpos($className, '\\')) {
             $className = substr($className, strrpos($className, '\\') + 1);
+        }
+
+        if (!$this->formatClassName) {
+            return $prefix . $className . $suffix;
         }
         $formattedClassName = $prefix . $className . $suffix;
 
